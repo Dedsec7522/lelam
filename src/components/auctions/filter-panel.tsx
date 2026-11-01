@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Lock } from "lucide-react";
 import { CATEGORIES, CATEGORY_BY_ID, OFFICES, STATES } from "@/lib/taxonomy";
 import type { CategoryId } from "@/lib/types";
@@ -127,9 +128,9 @@ export function FilterPanel({
             onChange={(e) => set("reauction", e.target.checked)}
           />
           {!canReauction && (
-            <a href="/pricing" className="inline-flex shrink-0 items-center gap-1 rounded-full bg-copper-soft px-2 py-0.5 text-[0.7rem] font-semibold text-copper">
+            <Link href="/pricing" className="inline-flex shrink-0 items-center gap-1 rounded-full bg-copper-soft px-2 py-0.5 text-[0.7rem] font-semibold text-copper">
               <Lock className="size-3" aria-hidden /> PRO
-            </a>
+            </Link>
           )}
         </div>
       </fieldset>

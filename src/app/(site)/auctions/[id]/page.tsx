@@ -17,6 +17,11 @@ import { JsonLd } from "@/components/seo/json-ld";
 
 type Props = { params: Promise<{ id: string }> };
 
+// Static (GitHub Pages) export pre-renders every lot; the server build renders on demand.
+export function generateStaticParams() {
+  return process.env.STATIC_EXPORT === "1" ? catalog().list().map((a) => ({ id: a.id })) : [];
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const a = catalog().get(id);

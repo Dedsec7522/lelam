@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { PlanId, Role } from "@/lib/types";
+import { STATIC_DEMO } from "@/lib/site";
 
 export interface ClientUser {
   id: string;
@@ -28,7 +29,7 @@ const SessionCtx = createContext<SessionState | null>(null);
 export function SessionProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [user, setUser] = useState<ClientUser | null>(null);
-  const [status, setStatus] = useState<"loading" | "ready">("loading");
+  const [status, setStatus] = useState<"loading" | "ready">(STATIC_DEMO ? "ready" : "loading");
 
   const refresh = useCallback(async () => {
     try {
@@ -50,6 +51,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, [router]);
 
   useEffect(() => {
+    // Static demo has no auth API: everyone is a signed-out visitor.
+    if (STATIC_DEMO) return;
     let alive = true;
     fetch("/api/auth/me", { cache: "no-store" })
       .then((res) => res.json() as Promise<{ user: ClientUser | null }>)

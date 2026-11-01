@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight, Check, Loader2 } from "lucide-react";
 import { motionTokens } from "@/lib/motion";
+import { DEMO_FORM_MESSAGE, STATIC_DEMO } from "@/lib/site";
 
 export function NewsletterForm() {
   const [email, setEmail] = useState("");
@@ -12,6 +13,11 @@ export function NewsletterForm() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (STATIC_DEMO) {
+      setState("error");
+      setMessage(DEMO_FORM_MESSAGE);
+      return;
+    }
     setState("loading");
     try {
       const res = await fetch("/api/leads", {

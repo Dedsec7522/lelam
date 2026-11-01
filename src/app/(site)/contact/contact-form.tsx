@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ChangeEvent } from "react";
+import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { CheckCircle2, Copy, Send } from "lucide-react";
 import { CONTACT_TOPICS } from "@/lib/validation";
@@ -151,9 +152,13 @@ export function ContactForm() {
 
 type Mode = "support" | "sales";
 
-/** Support / Sales switch. Keeps `?topic=sales` in the URL so the choice is shareable. */
-export function ContactPanels({ initial }: { initial: Mode }) {
-  const [mode, setMode] = useState<Mode>(initial);
+/**
+ * Support / Sales switch. Keeps `?topic=sales` in the URL so the choice is shareable.
+ * Reads the query on the client (inside Suspense) so the page stays statically renderable.
+ */
+export function ContactPanels() {
+  const params = useSearchParams();
+  const [mode, setMode] = useState<Mode>(params.get("topic") === "sales" ? "sales" : "support");
   const reduce = useSafeReducedMotion();
 
   function change(next: Mode) {

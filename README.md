@@ -4,6 +4,17 @@ An original, production-oriented rebuild of [lelam.co](https://www.lelam.co): on
 
 The functionality and information architecture follow the reference site (research: [`docs/research.md`](docs/research.md)). The visual design, copy, artwork, logo and motion are new. Architecture and the route map: [`docs/PLAN.md`](docs/PLAN.md).
 
+## Live demo
+
+**https://dedsec7522.github.io/lelam/** is a static preview built by `.github/workflows/pages.yml` on every push to `main` (and daily, so auction dates stay current).
+
+GitHub Pages has no server, so the Pages build (`scripts/prepare-pages.mjs`, `STATIC_EXPORT=1`, `NEXT_PUBLIC_STATIC_DEMO=1`):
+- **works fully:** home, marketplace search and filters (computed in the browser, including near-me), all 168 auction pages, pricing, blog, news, FAQ, legal pages, theme switching, and the assistant (FAQ answers in the browser);
+- **shows a "static demo" notice:** sign-in, dashboards, seller/logistics/admin portals and checkout;
+- **explains instead of sending:** contact, sales and newsletter forms.
+
+For every feature, run it locally or deploy the normal build to a Node host (below).
+
 ## Run it
 
 ```bash

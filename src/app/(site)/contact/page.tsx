@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { ArrowRight, Clock, Mail, MapPin, Phone } from "lucide-react";
 import { SUPPORT } from "@/lib/site";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
@@ -12,11 +13,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/contact" },
 };
 
-type SearchParams = Promise<{ topic?: string | string[] }>;
-
-export default async function ContactPage({ searchParams }: { searchParams: SearchParams }) {
-  const { topic } = await searchParams;
-  const initial = (Array.isArray(topic) ? topic[0] : topic) === "sales" ? "sales" : "support";
+export default function ContactPage() {
   const tel = SUPPORT.phone.replace(/\s+/g, "");
 
   const cards = [
@@ -125,7 +122,9 @@ export default async function ContactPage({ searchParams }: { searchParams: Sear
           </div>
 
           <Reveal delay={0.05}>
-            <ContactPanels key={initial} initial={initial} />
+            <Suspense fallback={<div className="h-[560px] rounded-3xl skeleton" aria-hidden />}>
+              <ContactPanels />
+            </Suspense>
             <p className="mt-4 flex items-center gap-2 text-sm text-muted">
               <Clock className="size-4 shrink-0 text-brand" aria-hidden />
               Messages sent outside {SUPPORT.hours} are answered on the next working day.

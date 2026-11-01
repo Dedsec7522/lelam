@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { DEMO_FORM_MESSAGE, STATIC_DEMO } from "@/lib/site";
 
 export type FormStatus = "idle" | "submitting" | "success" | "error";
 
@@ -27,6 +28,12 @@ export function useJsonForm<TBody extends object, TResult = unknown>(url: string
   }
 
   async function send(body: TBody): Promise<TResult | null> {
+    if (STATIC_DEMO) {
+      // No server in the GitHub Pages build: explain instead of failing with a network error.
+      setMessage(DEMO_FORM_MESSAGE);
+      setStatus("error");
+      return null;
+    }
     setStatus("submitting");
     setFields({});
     setMessage(null);

@@ -7,6 +7,8 @@ import { ArrowUp, MessageCircle, Sparkles, X } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { fadeOnly, motionTokens, panelPop, springs } from "@/lib/motion";
 import { CloseButton } from "@/components/ui/dialog";
+import { STATIC_DEMO } from "@/lib/site";
+import { searchFaqs } from "@/content/faqs";
 import { useSafeReducedMotion } from "@/lib/use-safe-reduced-motion";
 
 interface Message {
@@ -51,6 +53,14 @@ export function ChatWidget() {
     setMessages(next);
     setInput("");
     setBusy(true);
+    if (STATIC_DEMO) {
+      // GitHub Pages build: answer from the bundled help centre in the browser (same retrieval as /api/chat).
+      const hits = searchFaqs(question, 3);
+      const answer = hits[0]?.a ?? "I couldn't find that in our help centre. Try the FAQ page, or email support for account and billing questions.";
+      setMessages((m) => [...m, { role: "assistant", text: answer, sources: hits.slice(1).map((f) => ({ id: f.id, q: f.q })) }]);
+      setBusy(false);
+      return;
+    }
     try {
       const res = await fetch("/api/chat", {
         method: "POST",

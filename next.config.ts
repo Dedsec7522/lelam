@@ -8,18 +8,12 @@ const securityHeaders = [
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
 ];
 
-const nextConfig: NextConfig = {
-  poweredByHeader: false,
-  turbopack: {
-    // Pin the workspace root (a stray lockfile higher up the tree otherwise confuses inference).
-    root: __dirname,
-    rules: {
-      "*.css": {
-        loaders: ["@tailwindcss/turbopack"],
-        as: "*.css",
-      },
-    },
-  },
+// GitHub Pages build (see scripts/prepare-pages.mjs and .github/workflows/pages.yml).
+const STATIC_EXPORT = process.env.STATIC_EXPORT === "1";
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
+// Static hosting can't send headers or redirects, so they belong to the Node server build only.
+const serverOnly: Pick<NextConfig, "headers" | "redirects"> = {
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
@@ -32,6 +26,21 @@ const nextConfig: NextConfig = {
       { source: "/quote", destination: "/quotes", permanent: true },
       { source: "/dashboard/quote", destination: "/dashboard/quotes", permanent: true },
     ];
+  },
+};
+
+const nextConfig: NextConfig = {
+  ...(STATIC_EXPORT ? { output: "export" as const, basePath: BASE_PATH, trailingSlash: true, images: { unoptimized: true } } : serverOnly),
+  poweredByHeader: false,
+  turbopack: {
+    // Pin the workspace root (a stray lockfile higher up the tree otherwise confuses inference).
+    root: __dirname,
+    rules: {
+      "*.css": {
+        loaders: ["@tailwindcss/turbopack"],
+        as: "*.css",
+      },
+    },
   },
 };
 

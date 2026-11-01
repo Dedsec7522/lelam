@@ -18,6 +18,8 @@ import { WatchlistProvider } from "./watch-button";
 import { FilterPanel, FILTER_KEYS, countActive, type FilterValues } from "./filter-panel";
 import { QuickView } from "./quick-view";
 import { useSafeReducedMotion } from "@/lib/use-safe-reduced-motion";
+import { STATIC_DEMO } from "@/lib/site";
+import type { FilterInput } from "@/lib/run-search";
 
 export interface MarketResult {
   items: CardAuction[];
@@ -65,7 +67,16 @@ function readFilters(sp: URLSearchParams): FilterValues {
   };
 }
 
-export function Marketplace({ initial, canReauction }: { initial: MarketResult; canReauction: boolean }) {
+export function Marketplace({
+  initial,
+  canReauction,
+  localSearch,
+}: {
+  initial: MarketResult;
+  canReauction: boolean;
+  /** Static (GitHub Pages) build: run near-me searches in the browser instead of POSTing to the API. */
+  localSearch?: (input: FilterInput) => MarketResult;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
@@ -149,6 +160,10 @@ export function Marketplace({ initial, canReauction }: { initial: MarketResult; 
       page: Number(sp.get("page") ?? 1),
     };
     const key = sp.toString();
+    if (localSearch) {
+      queueMicrotask(() => setNearResult({ key, data: localSearch(body as FilterInput) }));
+      return () => controller.abort();
+    }
     fetch("/api/auctions/search", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: controller.signal })
       .then(async (r) => {
         if (!r.ok) throw new Error(`search ${r.status}`);
@@ -159,7 +174,7 @@ export function Marketplace({ initial, canReauction }: { initial: MarketResult; 
         if (err.name !== "AbortError") setNearResult({ key, data: null });
       });
     return () => controller.abort();
-  }, [nearWanted, geo, sp, filters, sort, initial.understood?.radiusKm]);
+  }, [nearWanted, geo, sp, filters, sort, initial.understood?.radiusKm, localSearch]);
 
   const activeCount = countActive(filters);
   const chips = buildChips(filters, result.understood, nearWanted, geo.status);
@@ -359,7 +374,7 @@ export function Marketplace({ initial, canReauction }: { initial: MarketResult; 
                     visible: { opacity: 1, y: 0, transition: { duration: motionTokens.duration.normal, ease: motionTokens.easing.smooth } },
                   }}
                 >
-                  <AuctionCard auction={a} onOpen={openQuick} layout={view} />
+                  <AuctionCard auction={a} onOpen={STATIC_DEMO ? undefined : openQuick} layout={view} />
                 </motion.li>
               ))}
             </motion.ul>
