@@ -1,0 +1,287 @@
+@import "tailwindcss";
+
+/*
+ * Lelam design tokens — "Ledger" system.
+ * Swiss grid + warm paper surfaces, ink typography, signal-teal brand, copper auction accent.
+ * Every component consumes semantic tokens; raw hex values live only here.
+ */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+  /* Light: crisp near-white canvas (a whisper of warmth), pure white cards, AA-safe secondary text. */
+  --paper: #f7f7f4;
+  --paper-2: #eeeee9;
+  --surface: #ffffff;
+  --surface-2: #fafaf8;
+  --ink: #0b1220;
+  --ink-2: #1f2937;
+  --muted: #4f5869; /* 7.2:1 on white */
+  --faint: #6b7385; /* 4.8:1 on white — labels stay AA */
+  --line: #e4e4de;
+  --line-strong: #cdcdc4;
+
+  /* Category accents: give each lot type its own hue instead of one repeated slab. */
+  --cat-scrap: #b4501a;
+  --cat-machinery: #3d5a8a;
+  --cat-vehicles: #4b4fa6;
+  --cat-real-estate: #0f6e5b;
+  --cat-e-waste: #7a4da3;
+  --cat-minerals: #a16207;
+  --cat-forest: #3f7d3a;
+  /* How strongly category art is tinted on the surface (soft in light, rich in dark). */
+  --art-a: 20%;
+  --art-b: 7%;
+  --art-line: 0.32;
+  --cover-a: 30%;
+  --cover-b: 14%;
+  --cover-line: 0.45;
+  --glow-brand: rgb(15 110 91 / 0.10);
+  --glow-copper: rgb(180 80 26 / 0.07);
+  /* Hero contour lines: visible texture, still well below text contrast. */
+  --contour: rgb(11 18 32 / 0.26);
+
+  --brand: #0f6e5b;
+  --brand-hover: #0b5a4a;
+  --brand-soft: #e3f1ec;
+  --brand-ink: #0a4a3d;
+  --on-brand: #ffffff;
+
+  --copper: #b4501a;
+  --copper-soft: #fbece2;
+  --on-copper: #ffffff;
+
+  --positive: #15803d;
+  --positive-soft: #e7f5ec;
+  --warning: #a15c07;
+  --warning-soft: #fdf3e2;
+  --danger: #b42318;
+  --danger-soft: #fdecea;
+
+  --ring: #0f6e5b;
+  --shadow-color: 16 24 40;
+  --grid-line: rgb(11 18 32 / 0.04);
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --paper: #0a0f1a;
+  --paper-2: #0e1422;
+  --surface: #121a29;
+  --surface-2: #162032;
+  --ink: #eef1f6;
+  --ink-2: #cfd6e2;
+  --muted: #a3adbf;
+  --faint: #8591a6; /* 4.6:1 on surface */
+  --line: #222d42;
+  --line-strong: #2e3a52;
+
+  --cat-scrap: #f0915a;
+  --cat-machinery: #7ea2dd;
+  --cat-vehicles: #9a9ef0;
+  --cat-real-estate: #34c3a0;
+  --cat-e-waste: #c39af0;
+  --cat-minerals: #f2c14e;
+  --cat-forest: #7cc576;
+  --art-a: 30%;
+  --art-b: 12%;
+  --art-line: 0.22;
+  --cover-a: 55%;
+  --cover-b: 25%;
+  --cover-line: 0.35;
+  --glow-brand: rgb(52 195 160 / 0.10);
+  --glow-copper: rgb(240 145 90 / 0.06);
+  --contour: rgb(238 241 246 / 0.13);
+
+  --brand: #34c3a0;
+  --brand-hover: #5ad4b5;
+  --brand-soft: #10302a;
+  --brand-ink: #8ee6cf;
+  --on-brand: #04130f;
+
+  --copper: #f0915a;
+  --copper-soft: #3a2116;
+  --on-copper: #1a0b03;
+
+  --positive: #4ade80;
+  --positive-soft: #11291b;
+  --warning: #f5b454;
+  --warning-soft: #2e2210;
+  --danger: #f87171;
+  --danger-soft: #331414;
+
+  --ring: #34c3a0;
+  --shadow-color: 0 0 0;
+  --grid-line: rgb(238 241 246 / 0.04);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-ink: var(--brand-ink);
+  --color-on-brand: var(--on-brand);
+  --color-copper: var(--copper);
+  --color-copper-soft: var(--copper-soft);
+  --color-on-copper: var(--on-copper);
+  --color-positive: var(--positive);
+  --color-positive-soft: var(--positive-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-ring: var(--ring);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
+  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
+
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --radius-2xl: 28px;
+
+  /* Soft-UI elevation: a tight contact shadow plus a wide ambient one. */
+  --shadow-xs: 0 1px 2px rgb(var(--shadow-color) / 0.05);
+  --shadow-sm: 0 1px 2px rgb(var(--shadow-color) / 0.04), 0 4px 14px -6px rgb(var(--shadow-color) / 0.10);
+  --shadow-md: 0 1px 3px rgb(var(--shadow-color) / 0.05), 0 18px 36px -14px rgb(var(--shadow-color) / 0.18);
+  --shadow-lg: 0 2px 6px rgb(var(--shadow-color) / 0.05), 0 32px 64px -22px rgb(var(--shadow-color) / 0.26);
+
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --animate-caret: caret 1s steps(1) infinite;
+  --animate-drift: drift 28s linear infinite;
+  --animate-pulse-dot: pulse-dot 2s ease-out infinite;
+  --animate-shimmer: shimmer 1.6s linear infinite;
+
+  @keyframes caret {
+    50% { opacity: 0; }
+  }
+  @keyframes drift {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(-50%, 0, 0); }
+  }
+  @keyframes pulse-dot {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 45%, transparent); }
+    100% { box-shadow: 0 0 0 8px transparent; }
+  }
+  @keyframes shimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: 88px;
+  }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--brand) 22%, transparent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  summary,
+  label[for] {
+    cursor: pointer;
+  }
+  h1, h2, h3, h4 {
+    text-wrap: balance;
+    letter-spacing: -0.02em;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  .container-page {
+    width: 100%;
+    max-width: 1240px;
+    margin-inline: auto;
+    padding-inline: 16px;
+  }
+  @media (min-width: 640px) {
+    .container-page { padding-inline: 24px; }
+  }
+  @media (min-width: 1024px) {
+    .container-page { padding-inline: 32px; }
+  }
+
+  /* Swiss grid backdrop used on hero and section heads */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+
+  /* Soft ambient light for hero areas: brand glow top-left, copper glow top-right. */
+  .hero-glow {
+    background-image:
+      radial-gradient(55% 60% at 12% 0%, var(--glow-brand), transparent 70%),
+      radial-gradient(40% 50% at 92% 8%, var(--glow-copper), transparent 70%);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .skeleton {
+    background: linear-gradient(90deg, var(--paper-2) 25%, var(--surface-2) 37%, var(--paper-2) 63%);
+    background-size: 400% 100%;
+    animation: var(--animate-shimmer);
+    border-radius: var(--radius-sm);
+  }
+
+  .prose-lelam { color: var(--ink-2); line-height: 1.75; font-size: 1.0625rem; }
+  .prose-lelam h2 { font-size: 1.6rem; font-weight: 600; margin: 2.4rem 0 0.8rem; color: var(--ink); }
+  .prose-lelam h3 { font-size: 1.2rem; font-weight: 600; margin: 1.8rem 0 0.6rem; color: var(--ink); }
+  .prose-lelam p { margin: 0 0 1.1rem; }
+  .prose-lelam ul { list-style: disc; padding-left: 1.3rem; margin: 0 0 1.1rem; }
+  .prose-lelam li { margin: 0.35rem 0; }
+  .prose-lelam strong { color: var(--ink); font-weight: 600; }
+  .prose-lelam a { color: var(--brand); text-decoration: underline; text-underline-offset: 3px; }
+  .prose-lelam table { width: 100%; border-collapse: collapse; margin: 1.2rem 0; font-size: 0.95rem; }
+  .prose-lelam th, .prose-lelam td { border: 1px solid var(--line); padding: 0.6rem 0.75rem; text-align: left; }
+  .prose-lelam th { background: var(--paper-2); color: var(--ink); font-weight: 600; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
